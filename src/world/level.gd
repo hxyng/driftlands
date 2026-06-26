@@ -18,8 +18,11 @@ var _walls: StaticBody2D
 var _camera: Camera2D
 var _shaker: Shaker
 var _hud: Hud
+var _ui_layer: CanvasLayer
 var _rng := RandomNumberGenerator.new()
 var _transitioning := false
+var _boon_queue := 0
+var _boon_active := false
 
 
 func _ready() -> void:
@@ -149,6 +152,42 @@ func _build_hud() -> void:
 	_hud.floor_number = floor_number
 	layer.add_child(_hud)
 
+	_ui_layer = CanvasLayer.new()
+	_ui_layer.layer = 20
+	add_child(_ui_layer)
+
+
+func spawn_pickup(kind: int, pos: Vector2, payload) -> void:
+	var p := Pickup.new()
+	add_child(p)
+	p.global_position = pos
+	p.setup(self, kind, payload)
+
+
+func toast(text: String, color: Color, pos: Vector2) -> void:
+	var dn := DamageNumber.new()
+	dn.setup_text(text, color)
+	add_child(dn)
+	dn.global_position = pos + Vector2(0, -14)
+
+
+func _show_next_boon() -> void:
+	if _boon_active or _boon_queue <= 0 or _ui_layer == null:
+		return
+	_boon_active = true
+	_boon_queue -= 1
+	var screen := BoonScreen.new()
+	_ui_layer.add_child(screen)
+	screen.chosen.connect(_on_boon_chosen)
+	screen.present(Boon.offer(_rng, 3))
+
+
+func _on_boon_chosen(boon) -> void:
+	player.apply_boon(boon)
+	_boon_active = false
+	toast(boon.title + "!", Palette.GOLD, player.global_position)
+	_show_next_boon()
+
 
 # ---- Combat API (called by actors) -----------------------------------------
 func player_attack(origin: Vector2, aim: Vector2, attacker: Stats, attack_range: float, arc_dot: float) -> void:
@@ -196,14 +235,22 @@ func shake(amount: float) -> void:
 # ---- Reward / lifecycle hooks ----------------------------------------------
 func _on_enemy_died(e: Enemy) -> void:
 	enemies.erase(e)
-	player.run_souls += e.soul_reward
-	player.progression.add_xp(e.xp_reward)
+	var pos := e.global_position
+	spawn_pickup(Pickup.Kind.XP, pos, e.xp_reward)
+	if _rng.randf() < 0.55:
+		spawn_pickup(Pickup.Kind.SOUL, pos + Vector2(_rng.randf_range(-5, 5), 0), e.soul_reward)
+	if _rng.randf() < 0.08:
+		spawn_pickup(Pickup.Kind.HEAL, pos, 18)
+	if _rng.randf() < e.loot_chance:
+		spawn_pickup(Pickup.Kind.ITEM, pos, LootTable.roll(_rng, floor_number, player.stats.luck))
 
 
 func _on_player_leveled(_level_num: int) -> void:
 	if player.health:
 		player.health.heal(player.health.max_hp * 0.25)
 	_shaker.add(1.5)
+	_boon_queue += 1
+	_show_next_boon()
 
 
 func _on_player_died() -> void:

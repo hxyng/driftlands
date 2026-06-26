@@ -71,6 +71,27 @@ func apply_boon(boon: Boon) -> void:
 	recompute_stats()
 
 
+func gain_xp(amount: int) -> void:
+	progression.add_xp(amount)
+
+
+func gain_souls(amount: int) -> void:
+	run_souls += amount
+
+
+## Picks up an item: auto-equips it when the slot is empty or it beats the
+## current piece; otherwise stashes it in the bag.
+func collect_item(item: Item) -> void:
+	var current := equipment.get_item(item.slot)
+	if current == null or item.power() > current.power():
+		var prev := equipment.equip(item)
+		if prev != null:
+			inventory.add(prev)
+		recompute_stats()
+	else:
+		inventory.add(item)
+
+
 func receive_hit(damage: int, crit: bool, from_pos: Vector2) -> void:
 	if health == null or health.invuln > 0.0 or not health.is_alive():
 		return

@@ -26,6 +26,15 @@ func icon_name() -> String:
 	return SLOT_ICON.get(slot, "sword")
 
 
+## A scalar "how good is this item" used for auto-equip comparisons.
+func power() -> float:
+	if mods == null:
+		return 0.0
+	return absf(mods.max_hp) + absf(mods.attack) * 5.0 + absf(mods.defense) * 4.0 \
+		+ absf(mods.crit_chance) * 200.0 + absf(mods.attack_speed) * 120.0 \
+		+ absf(mods.move_speed) + absf(mods.pickup_range) * 0.5 + absf(mods.luck) * 8.0
+
+
 func color() -> Color:
 	return Palette.rarity_color(rarity)
 

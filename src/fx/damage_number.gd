@@ -18,6 +18,13 @@ func setup(amount: int, crit := false) -> void:
 	_drift = Vector2(randf_range(-6, 6), -22)
 
 
+## Generic floating label (item pickups, notifications).
+func setup_text(text: String, color: Color) -> void:
+	_text = text
+	_color = color
+	_drift = Vector2(0, -16)
+
+
 func _ready() -> void:
 	_font = ThemeDB.fallback_font
 	z_index = 100

@@ -37,5 +37,10 @@ static func texture(name: String) -> Texture2D:
 static func atlas_region(name: String, index: int) -> Rect2:
 	var e := entry(name)
 	var fw: int = e.get("fw", 16)
-	var fh: int = e.get("fh", 16)
-	return Rect2(index * fw, 0, fw, fh)
+	return Rect2(index * fw, 0, fw, e.get("fh", 16))
+
+
+## Region rect for a named icon in the items atlas (by manifest index map).
+static func item_region(icon: String) -> Rect2:
+	var idx: int = entry("items").get("index", {}).get(icon, 0)
+	return Rect2(idx * 16, 0, 16, 16)
