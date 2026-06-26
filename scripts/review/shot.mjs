@@ -17,16 +17,26 @@ const browser = await chromium.launch({ args: ['--use-gl=angle', '--ignore-gpu-b
 const page = await browser.newPage({ viewport: { width: 960, height: 540 }, deviceScaleFactor: 1 });
 
 const errors = [];
-page.on('console', m => { if (m.type() === 'error') errors.push(m.text()); });
+const logs = [];
+page.on('console', m => { logs.push(m.text()); if (m.type() === 'error') errors.push(m.text()); });
 page.on('pageerror', e => errors.push('PAGEERROR ' + String(e)));
 
 await page.goto(url, { waitUntil: 'load', timeout: 90000 });
 await page.waitForSelector('canvas', { timeout: 90000 });
 await page.waitForTimeout(waitMs);
 
-// focus the canvas so Godot receives input
+// focus the canvas so Godot receives input — click a top corner, NOT the
+// center (center overlaps menu buttons and would trigger them).
 const canvas = await page.$('canvas');
-await canvas.click({ position: { x: 480, y: 270 } }).catch(() => {});
+await canvas.click({ position: { x: 6, y: 6 } }).catch(() => {});
+
+// optional clicks (canvas-relative "x,y;x,y") before shooting — for menus
+const clicks = (process.argv[7] || '').split(';').map(s => s.trim()).filter(Boolean);
+for (const c of clicks) {
+  const [cx, cy] = c.split(',').map(Number);
+  await canvas.click({ position: { x: cx, y: cy } });
+  await page.waitForTimeout(450);
+}
 
 const base = out.replace(/\.png$/, '');
 for (let i = 0; i < shots; i++) {
@@ -41,6 +51,8 @@ for (let i = 0; i < shots; i++) {
   console.log('shot saved:', path);
 }
 
+const boots = logs.filter(l => l.includes('DRIFTLANDS_BOOT'));
+if (boots.length) console.log('BOOTS: ' + boots.join(' | '));
 if (errors.length) console.log('PAGE ERRORS:\n' + errors.slice(0, 30).join('\n'));
 else console.log('no page errors');
 await browser.close();

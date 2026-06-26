@@ -23,6 +23,8 @@ var _rng := RandomNumberGenerator.new()
 var _transitioning := false
 var _boon_queue := 0
 var _boon_active := false
+var _pause_menu: PauseMenu
+var _dead := false
 
 
 func _ready() -> void:
@@ -36,10 +38,38 @@ func _ready() -> void:
 
 
 func _process(_delta: float) -> void:
-	if _transitioning or player == null or dungeon == null:
+	if _transitioning or _dead or player == null or dungeon == null:
 		return
 	if dungeon.world_to_cell(player.global_position) == dungeon.exit:
 		_next_floor()
+
+
+func _unhandled_input(event: InputEvent) -> void:
+	if _dead or _boon_active:
+		return
+	if event.is_action_pressed("pause"):
+		_open_pause()
+
+
+func _open_pause() -> void:
+	if is_instance_valid(_pause_menu) or _ui_layer == null:
+		return
+	_pause_menu = PauseMenu.new()
+	_ui_layer.add_child(_pause_menu)
+	_pause_menu.abandoned.connect(_abandon_run)
+	_pause_menu.open()
+
+
+func _abandon_run() -> void:
+	_bank_run()
+	get_tree().change_scene_to_file("res://scenes/main_menu.tscn")
+
+
+func _bank_run() -> void:
+	Game.meta.souls += player.run_souls
+	Game.meta.best_floor = maxi(Game.meta.best_floor, floor_number)
+	Game.meta.total_runs += 1
+	Game.save_meta()
 
 
 # ---- Floor lifecycle -------------------------------------------------------
@@ -254,9 +284,33 @@ func _on_player_leveled(_level_num: int) -> void:
 
 
 func _on_player_died() -> void:
-	Game.meta.souls += player.run_souls
-	Game.meta.best_floor = maxi(Game.meta.best_floor, floor_number)
-	Game.meta.total_runs += 1
-	Game.save_meta()
-	await get_tree().create_timer(1.3).timeout
-	get_tree().reload_current_scene()
+	if _dead:
+		return
+	_dead = true
+	_bank_run()
+	_show_game_over()
+	await get_tree().create_timer(2.6).timeout
+	get_tree().change_scene_to_file("res://scenes/main_menu.tscn")
+
+
+func _show_game_over() -> void:
+	if _ui_layer == null:
+		return
+	var over := Control.new()
+	over.process_mode = Node.PROCESS_MODE_ALWAYS
+	over.set_anchors_preset(Control.PRESET_FULL_RECT)
+	var bg := ColorRect.new()
+	bg.color = Color(0.10, 0.02, 0.02, 0.55)
+	bg.set_anchors_preset(Control.PRESET_FULL_RECT)
+	over.add_child(bg)
+	var cc := CenterContainer.new()
+	cc.set_anchors_preset(Control.PRESET_FULL_RECT)
+	over.add_child(cc)
+	var col := VBoxContainer.new()
+	col.alignment = BoxContainer.ALIGNMENT_CENTER
+	col.add_theme_constant_override("separation", 6)
+	cc.add_child(col)
+	col.add_child(UiTheme.center_label("YOU DIED", 30, Palette.BLOOD))
+	col.add_child(UiTheme.center_label(
+		"Floor %d  -  %d souls banked" % [floor_number, player.run_souls], 11, Palette.BONE))
+	_ui_layer.add_child(over)
