@@ -5,6 +5,7 @@ extends Control
 
 var player: Player
 var floor_number := 1
+var boss: Enemy
 
 var _font: Font
 
@@ -29,6 +30,18 @@ func _draw() -> void:
 	_label(Vector2(6, 33),
 		"LV %d    FLOOR %d    SOULS %d" % [player.progression.level, floor_number, player.run_souls],
 		8, Palette.BONE)
+	_draw_boss_bar()
+
+
+func _draw_boss_bar() -> void:
+	if boss == null or not is_instance_valid(boss) or boss.health == null:
+		return
+	var view_w := get_viewport_rect().size.x
+	var w := minf(200.0, view_w - 24.0)
+	var x := (view_w - w) * 0.5
+	var y := 14.0
+	_label(Vector2(x, y - 4), "THE HOLLOW WARDEN", 8, Palette.EMBER)
+	_bar(Vector2(x, y + 6), w, 7, boss.health.ratio(), Palette.BLOOD, Palette.STONE_DARK)
 
 
 func _bar(pos: Vector2, w: float, h: float, ratio: float, fill: Color, bg: Color) -> void:

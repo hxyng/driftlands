@@ -26,6 +26,7 @@ var _repath := 0.0
 var _contact := 0.0
 var _knockback := Vector2.ZERO
 var _flash := 0.0
+var _shoot_t := 2.5
 
 
 func configure(kind_name: String, floor_num: int, level: Level) -> void:
@@ -60,6 +61,10 @@ func configure(kind_name: String, floor_num: int, level: Level) -> void:
 	col.shape = shape
 	add_child(col)
 	add_to_group("enemies")
+
+	is_boss = kind_name == "warden"
+	if is_boss:
+		_sprite.scale = Vector2(1.25, 1.25)
 
 
 func boostf(scale: float) -> void:
@@ -120,6 +125,13 @@ func _physics_process(delta: float) -> void:
 	if to_player.length() < radius + 8.0 and _contact <= 0.0:
 		_contact = contact_cd
 		_level.enemy_hits_player(self)
+
+	if is_boss:
+		_shoot_t -= delta
+		if _shoot_t <= 0.0 and to_player.length() < 160.0:
+			_shoot_t = 2.4
+			_flash = 0.18
+			_level.boss_shoot(global_position, ppos)
 
 
 func _on_died() -> void:

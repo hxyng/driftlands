@@ -16,6 +16,10 @@ const KINDS := {
 		"sprite": "skeleton", "anim": "walk", "hp": 30.0, "attack": 10.0, "speed": 54.0,
 		"contact_cd": 1.0, "xp": 12, "souls": 4, "radius": 5.0, "knock": 56.0, "loot": 0.16,
 	},
+	"warden": {
+		"sprite": "boss", "anim": "idle", "hp": 220.0, "attack": 16.0, "speed": 30.0,
+		"contact_cd": 1.1, "xp": 80, "souls": 30, "radius": 11.0, "knock": 80.0, "loot": 1.0,
+	},
 }
 
 

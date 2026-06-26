@@ -25,6 +25,7 @@ var _boon_queue := 0
 var _boon_active := false
 var _pause_menu: PauseMenu
 var _dead := false
+var _boss: Enemy
 
 
 func _ready() -> void:
@@ -137,8 +138,15 @@ func _apply_camera_limits() -> void:
 
 
 func _spawn_enemies() -> void:
+	if floor_number % 5 == 0:
+		_spawn_boss()
+		_spawn_minions(4)
+		return
+	_spawn_minions(6 + floor_number * 2)
+
+
+func _spawn_minions(count: int) -> void:
 	var roster := EnemyKinds.roster_for_floor(floor_number)
-	var count := 6 + floor_number * 2
 	for _i in count:
 		var cell := dungeon.random_floor_far_from_spawn(_rng, 4)
 		var e := Enemy.new()
@@ -149,6 +157,32 @@ func _spawn_enemies() -> void:
 		enemies.append(e)
 
 
+func _spawn_boss() -> void:
+	var e := Enemy.new()
+	e.configure("warden", floor_number, self)
+	e.position = dungeon.cell_to_world_center(dungeon.random_floor_far_from_spawn(_rng, 10))
+	e.died.connect(_on_enemy_died)
+	e.died.connect(_on_boss_died)
+	add_child(e)
+	enemies.append(e)
+	_boss = e
+	if _hud:
+		_hud.boss = e
+
+
+func boss_shoot(origin: Vector2, target: Vector2) -> void:
+	var base := target - origin
+	if base.length() < 0.01:
+		base = Vector2.RIGHT
+	base = base.normalized()
+	for a in [-0.28, 0.0, 0.28]:
+		var pr := Projectile.new()
+		add_child(pr)
+		pr.global_position = origin
+		pr.setup(self, base.rotated(a), int(8 + floor_number * 1.5), 84.0)
+	_shaker.add(2.0)
+
+
 func _next_floor() -> void:
 	_transitioning = true
 	floor_number += 1
@@ -156,6 +190,9 @@ func _next_floor() -> void:
 		if is_instance_valid(e):
 			e.queue_free()
 	enemies.clear()
+	_boss = null
+	if _hud:
+		_hud.boss = null
 	if is_instance_valid(_renderer):
 		_renderer.queue_free()
 	if is_instance_valid(_walls):
@@ -180,6 +217,7 @@ func _build_hud() -> void:
 	_hud = Hud.new()
 	_hud.player = player
 	_hud.floor_number = floor_number
+	_hud.boss = _boss
 	layer.add_child(_hud)
 
 	_ui_layer = CanvasLayer.new()
@@ -273,6 +311,20 @@ func _on_enemy_died(e: Enemy) -> void:
 		spawn_pickup(Pickup.Kind.HEAL, pos, 18)
 	if _rng.randf() < e.loot_chance:
 		spawn_pickup(Pickup.Kind.ITEM, pos, LootTable.roll(_rng, floor_number, player.stats.luck))
+
+
+func _on_boss_died(e: Enemy) -> void:
+	_boss = null
+	if _hud:
+		_hud.boss = null
+	var pos := e.global_position
+	spawn_pickup(Pickup.Kind.ITEM, pos, LootTable.roll(_rng, floor_number + 5, player.stats.luck + 12.0))
+	spawn_pickup(Pickup.Kind.SOUL, pos, 40)
+	for _i in 6:
+		var off := Vector2(_rng.randf_range(-12, 12), _rng.randf_range(-12, 12))
+		spawn_pickup(Pickup.Kind.XP, pos + off, 22)
+	toast("WARDEN SLAIN", Palette.GOLD, pos + Vector2(0, -18))
+	_shaker.add(6.0)
 
 
 func _on_player_leveled(_level_num: int) -> void:
