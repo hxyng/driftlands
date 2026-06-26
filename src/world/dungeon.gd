@@ -20,6 +20,7 @@ var floor_cells: Array[Vector2i] = []
 var dist_from_spawn: DistanceField
 
 var _generator := CellularAutomataGenerator.new()
+var _pathfinder := AStarPathfinder.new()
 
 
 func generate(w: int, h: int, level_seed: int, config: GenConfig = null) -> void:
@@ -77,6 +78,11 @@ func cell_to_world_center(cell: Vector2i) -> Vector2:
 
 func pixel_size() -> Vector2:
 	return Vector2(width, height) * TILE
+
+
+## A* path of cells from one floor tile to another (empty if unreachable).
+func path(from: Vector2i, to: Vector2i) -> Array[Vector2i]:
+	return _pathfinder.find_path(grid, from, to, Cell.FLOOR)
 
 
 ## A random floor cell at least `min_distance` cells (by path) from the spawn —
