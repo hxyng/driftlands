@@ -1,0 +1,19 @@
+<svg width="128" height="128" viewBox="0 0 128 128" xmlns="http://www.w3.org/2000/svg">
+  <rect width="128" height="128" rx="22" fill="#16140f"/>
+  <rect x="10" y="10" width="108" height="108" rx="16" fill="none" stroke="#3a3527" stroke-width="3"/>
+  <!-- blade -->
+  <polygon points="64,20 71,30 71,82 64,92 57,82 57,30" fill="#d8c9a3"/>
+  <polygon points="64,20 71,30 64,34 57,30" fill="#efe4c8"/>
+  <line x1="64" y1="30" x2="64" y2="84" stroke="#574f3b" stroke-width="2"/>
+  <!-- crossguard -->
+  <rect x="44" y="84" width="40" height="8" rx="3" fill="#9c4527"/>
+  <rect x="44" y="84" width="40" height="3" rx="1" fill="#d6743a"/>
+  <!-- grip + pommel gem -->
+  <rect x="60" y="92" width="8" height="14" fill="#574f3b"/>
+  <circle cx="64" cy="110" r="7" fill="#e7b24c"/>
+  <circle cx="62" cy="108" r="2.4" fill="#efe4c8"/>
+  <!-- moss flecks -->
+  <rect x="22" y="96" width="6" height="6" fill="#5d7d3a"/>
+  <rect x="100" y="100" width="5" height="5" fill="#5d7d3a"/>
+  <rect x="98" y="24" width="6" height="6" fill="#2c3f25"/>
+</svg>

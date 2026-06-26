@@ -1,0 +1,18 @@
+# Godot 4 editor + import cache
+.godot/
+.import/
+
+# Builds
+build/
+export/
+*.tmp
+
+# Node / Playwright (review tooling)
+node_modules/
+playwright-report/
+test-results/
+.review/
+
+# OS noise
+.DS_Store
+Thumbs.db

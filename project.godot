@@ -1,0 +1,32 @@
+; DriftLands — top-down dungeon-crawler RPG (Godot 4).
+; Descends from the DriftCaves procedural-generation tech.
+
+config_version=5
+
+[application]
+
+config/name="DriftLands"
+config/description="A top-down dungeon-crawler RPG: procedural floors, loot, leveling, equipment, bosses."
+run/main_scene="res://scenes/game.tscn"
+config/features=PackedStringArray("4.3", "GL Compatibility")
+config/icon="res://icon.svg"
+
+[autoload]
+
+Game="*res://src/app/game.gd"
+
+[display]
+
+window/size/viewport_width=480
+window/size/viewport_height=270
+window/size/window_width_override=960
+window/size/window_height_override=540
+window/stretch/mode="canvas_items"
+window/stretch/aspect="keep"
+
+[rendering]
+
+renderer/rendering_method="gl_compatibility"
+renderer/rendering_method.mobile="gl_compatibility"
+textures/canvas_textures/default_texture_filter=0
+environment/defaults/default_clear_color=Color(0.086, 0.078, 0.059, 1)
