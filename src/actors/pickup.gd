@@ -65,8 +65,11 @@ func _make_icon(icon: String) -> void:
 
 func _process(delta: float) -> void:
 	_t += delta
+	if not is_instance_valid(_level):
+		queue_free()
+		return
 	if _player == null or not is_instance_valid(_player):
-		_player = _level.player if _level else null
+		_player = _level.player
 	if _player != null:
 		var to := _player.global_position - global_position
 		var d := to.length()
