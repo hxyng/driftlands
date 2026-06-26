@@ -1,0 +1,245 @@
+{
+  "player": {
+    "file": "player.png",
+    "fw": 16,
+    "fh": 16,
+    "anims": {
+      "idle": {
+        "frames": [
+          0,
+          1
+        ],
+        "fps": 3
+      },
+      "walk": {
+        "frames": [
+          2,
+          3
+        ],
+        "fps": 9
+      },
+      "attack": {
+        "frames": [
+          4,
+          5
+        ],
+        "fps": 16
+      },
+      "hurt": {
+        "frames": [
+          6
+        ],
+        "fps": 1
+      }
+    }
+  },
+  "slime": {
+    "file": "slime.png",
+    "fw": 16,
+    "fh": 16,
+    "anims": {
+      "idle": {
+        "frames": [
+          0,
+          1
+        ],
+        "fps": 3
+      },
+      "move": {
+        "frames": [
+          0,
+          1
+        ],
+        "fps": 6
+      },
+      "hurt": {
+        "frames": [
+          3
+        ],
+        "fps": 1
+      }
+    }
+  },
+  "bat": {
+    "file": "bat.png",
+    "fw": 16,
+    "fh": 16,
+    "anims": {
+      "fly": {
+        "frames": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "fps": 12
+      },
+      "hurt": {
+        "frames": [
+          1
+        ],
+        "fps": 1
+      }
+    }
+  },
+  "skeleton": {
+    "file": "skeleton.png",
+    "fw": 16,
+    "fh": 16,
+    "anims": {
+      "idle": {
+        "frames": [
+          0,
+          1
+        ],
+        "fps": 2
+      },
+      "walk": {
+        "frames": [
+          2,
+          3
+        ],
+        "fps": 8
+      },
+      "attack": {
+        "frames": [
+          4,
+          5
+        ],
+        "fps": 12
+      }
+    }
+  },
+  "boss": {
+    "file": "boss.png",
+    "fw": 32,
+    "fh": 32,
+    "anims": {
+      "idle": {
+        "frames": [
+          0,
+          1
+        ],
+        "fps": 2
+      },
+      "attack": {
+        "frames": [
+          2,
+          3
+        ],
+        "fps": 6
+      },
+      "hurt": {
+        "frames": [
+          4
+        ],
+        "fps": 1
+      }
+    }
+  },
+  "coin": {
+    "file": "coin.png",
+    "fw": 16,
+    "fh": 16,
+    "anims": {
+      "spin": {
+        "frames": [
+          0,
+          1,
+          2,
+          3
+        ],
+        "fps": 10
+      }
+    }
+  },
+  "orb": {
+    "file": "orb.png",
+    "fw": 8,
+    "fh": 8,
+    "anims": {
+      "spin": {
+        "frames": [
+          0,
+          1
+        ],
+        "fps": 10
+      }
+    }
+  },
+  "slash": {
+    "file": "slash.png",
+    "fw": 20,
+    "fh": 20,
+    "anims": {
+      "play": {
+        "frames": [
+          0,
+          1,
+          2
+        ],
+        "fps": 22
+      }
+    }
+  },
+  "hit": {
+    "file": "hit.png",
+    "fw": 16,
+    "fh": 16,
+    "anims": {
+      "play": {
+        "frames": [
+          0,
+          1,
+          2
+        ],
+        "fps": 20
+      }
+    }
+  },
+  "poof": {
+    "file": "poof.png",
+    "fw": 16,
+    "fh": 16,
+    "anims": {
+      "play": {
+        "frames": [
+          0,
+          1,
+          2
+        ],
+        "fps": 16
+      }
+    }
+  },
+  "items": {
+    "file": "items.png",
+    "fw": 16,
+    "fh": 16,
+    "index": {
+      "potion_hp": 0,
+      "potion_xp": 1,
+      "sword": 2,
+      "shield": 3,
+      "helm": 4,
+      "ring": 5,
+      "boots": 6,
+      "scroll": 7,
+      "heart": 8
+    }
+  },
+  "tiles": {
+    "file": "tiles.png",
+    "fw": 16,
+    "fh": 16,
+    "index": {
+      "floor0": 0,
+      "floor1": 1,
+      "floor2": 2,
+      "floor3": 3,
+      "wall": 4,
+      "wall_top": 5,
+      "stairs": 6
+    }
+  }
+}
