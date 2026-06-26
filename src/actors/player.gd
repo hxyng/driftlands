@@ -92,6 +92,18 @@ func collect_item(item: Item) -> void:
 		inventory.add(item)
 
 
+## Force-equips a bag item the player chose in the inventory screen, swapping
+## whatever currently occupies the slot back into the bag (no power comparison).
+func equip_from_bag(item: Item) -> void:
+	if not inventory.items.has(item):
+		return
+	inventory.remove(item)
+	var prev := equipment.equip(item)
+	if prev != null:
+		inventory.add(prev)
+	recompute_stats()
+
+
 func receive_hit(damage: int, crit: bool, from_pos: Vector2) -> void:
 	if health == null or health.invuln > 0.0 or not health.is_alive():
 		return

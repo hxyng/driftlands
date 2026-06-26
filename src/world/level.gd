@@ -24,6 +24,7 @@ var _transitioning := false
 var _boon_queue := 0
 var _boon_active := false
 var _pause_menu: PauseMenu
+var _inv_screen: InventoryScreen
 var _dead := false
 var _boss: Enemy
 
@@ -50,6 +51,16 @@ func _unhandled_input(event: InputEvent) -> void:
 		return
 	if event.is_action_pressed("pause"):
 		_open_pause()
+	elif event.is_action_pressed("inventory"):
+		_open_inventory()
+
+
+func _open_inventory() -> void:
+	if is_instance_valid(_inv_screen) or _ui_layer == null or player == null:
+		return
+	_inv_screen = InventoryScreen.new()
+	_ui_layer.add_child(_inv_screen)
+	_inv_screen.open(player)
 
 
 func _open_pause() -> void:
