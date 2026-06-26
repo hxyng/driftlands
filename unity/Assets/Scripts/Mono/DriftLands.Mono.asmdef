@@ -1,0 +1,10 @@
+{
+    "name": "DriftLands.Mono",
+    "rootNamespace": "DriftLands.Mono",
+    "references": [
+        "DriftLands.Core"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "autoReferenced": true
+}

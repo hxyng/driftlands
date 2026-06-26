@@ -10,8 +10,11 @@ import { chromium } from 'playwright';
 const url = process.argv[2] || 'http://localhost:8099/';
 const out = process.argv[3] || '.review/shot.png';
 const waitMs = parseInt(process.argv[4] || '7000', 10);
-const keys = (process.argv[5] || '').split(',').map(s => s.trim()).filter(Boolean);
-const shots = parseInt(process.argv[6] || '1', 10);
+// NOTE: PowerShell drops empty-string ("") args to native commands, which
+// shifts argv. Pass "none" for an empty keys/clicks slot instead of "".
+const isEmpty = s => !s || s === 'none' || s === '-';
+const keys = isEmpty(process.argv[5]) ? [] : process.argv[5].split(',').map(s => s.trim()).filter(Boolean);
+const shots = parseInt(process.argv[6] || '1', 10) || 1;
 
 const browser = await chromium.launch({ args: ['--use-gl=angle', '--ignore-gpu-blocklist'] });
 const page = await browser.newPage({ viewport: { width: 960, height: 540 }, deviceScaleFactor: 1 });
@@ -31,7 +34,7 @@ const canvas = await page.$('canvas');
 await canvas.click({ position: { x: 6, y: 6 } }).catch(() => {});
 
 // optional clicks (canvas-relative "x,y;x,y") before shooting — for menus
-const clicks = (process.argv[7] || '').split(';').map(s => s.trim()).filter(Boolean);
+const clicks = isEmpty(process.argv[7]) ? [] : process.argv[7].split(';').map(s => s.trim()).filter(Boolean);
 for (const c of clicks) {
   const [cx, cy] = c.split(',').map(Number);
   await canvas.click({ position: { x: cx, y: cy } });

@@ -13,6 +13,19 @@ playwright-report/
 test-results/
 .review/
 
+# Unity generated
+unity/Library/
+unity/Temp/
+unity/Logs/
+unity/UserSettings/
+unity/[Bb]uild/
+unity/*.csproj
+unity/*.sln
+
+# .NET build output
+**/bin/
+**/obj/
+
 # OS noise
 .DS_Store
 Thumbs.db
